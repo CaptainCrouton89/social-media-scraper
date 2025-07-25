@@ -5,7 +5,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   redditFetchFeed: () => ipcRenderer.invoke('reddit-fetch-feed'),
   redditCheckAuth: () => ipcRenderer.invoke('reddit-check-auth'),
   twitterFetchFeed: () => ipcRenderer.invoke('twitter-fetch-feed'),
-  twitterCheckAuth: () => ipcRenderer.invoke('twitter-check-auth')
+  twitterCheckAuth: () => ipcRenderer.invoke('twitter-check-auth'),
+  youtubeLogin: () => ipcRenderer.invoke('youtube-login'),
+  youtubeFetchFeed: () => ipcRenderer.invoke('youtube-fetch-feed'),
+  youtubeCheckAuth: () => ipcRenderer.invoke('youtube-check-auth')
 });
 
 declare global {
@@ -16,6 +19,9 @@ declare global {
       redditCheckAuth: () => Promise<{ authenticated: boolean; error?: string }>;
       twitterFetchFeed: () => Promise<{ success: boolean; data?: any; error?: string }>;
       twitterCheckAuth: () => Promise<{ authenticated: boolean; error?: string }>;
+      youtubeLogin: () => Promise<{ success: boolean; cookies?: number; error?: string }>;
+      youtubeFetchFeed: () => Promise<{ success: boolean; data?: any; error?: string }>;
+      youtubeCheckAuth: () => Promise<{ authenticated: boolean; error?: string }>;
     };
   }
 }

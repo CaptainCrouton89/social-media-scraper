@@ -1,403 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fluency</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-hover: #5855eb;
-            --secondary-color: #8b5cf6;
-            --reddit-color: #ff6b35;
-            --twitter-color: #1d9bf0;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --text-muted: #9ca3af;
-            --surface: #ffffff;
-            --surface-secondary: #f9fafb;
-            --border: #e5e7eb;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
+      :root {
+        --primary-color: #6366f1;
+        --primary-hover: #5855eb;
+        --secondary-color: #8b5cf6;
+        --reddit-color: #ff6b35;
+        --twitter-color: #1d9bf0;
+        --youtube-color: #ff0000;
+        --success-color: #22c55e;
+        --error-color: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --surface: #ffffff;
+        --surface-secondary: #f9fafb;
+        --border: #e5e7eb;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
 
-        * {
-            box-sizing: border-box;
-        }
+      * {
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 24px 32px;
-            backdrop-filter: blur(8px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+          sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--text-primary);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 32px;
-        }
-        
-        .app-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 0;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+      .header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 24px 32px;
+        backdrop-filter: blur(8px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 32px;
+      }
 
-        .auth-section {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 20px;
-            background: var(--surface-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
+      .app-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin: 0;
+        letter-spacing: -0.5px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-        .platform-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+      .nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
 
-        .platform-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--error-color);
-            transition: all 0.2s ease;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-        }
-        
-        .status-indicator.authenticated {
-            background-color: var(--success-color);
-            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-        }
+      .auth-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 20px;
+        background: var(--surface-secondary);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
 
-        .status-text {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+      .platform-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-        button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
-            letter-spacing: 0.3px;
-        }
-        
-        button:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
+      .platform-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 14px 28px;
-            font-size: 15px;
-            border-radius: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--error-color);
+        transition: all 0.2s ease;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+      }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        button:disabled {
-            background: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px;
-        }
+      .status-indicator.authenticated {
+        background-color: var(--success-color);
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+      }
 
-        .loading {
-            text-align: center;
-            padding: 48px 20px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
+      .status-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        box-shadow: var(--shadow-sm);
+        letter-spacing: 0.3px;
+      }
+
+      button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        padding: 14px 28px;
+        font-size: 15px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      button:disabled {
+        background: var(--text-muted);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .main-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .feed {
+        column-count: 1;
+        column-gap: 24px;
+        column-fill: balance;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      @media (min-width: 769px) and (max-width: 1200px) {
         .feed {
-            column-count: 1;
-            column-gap: 24px;
-            column-fill: balance;
-            padding: 0;
-            max-width: 100%;
-            overflow-x: hidden;
+          column-count: 2;
+          column-width: auto;
         }
-        
-        @media (min-width: 769px) and (max-width: 1200px) {
-            .feed {
-                column-count: 2;
-                column-width: auto;
-            }
-        }
-        
-        @media (min-width: 1201px) and (max-width: 1600px) {
-            .feed {
-                column-count: 3;
-                column-width: auto;
-            }
-        }
-        
-        @media (min-width: 1601px) {
-            .feed {
-                column-count: 4;
-                column-width: auto;
-            }
-        }
-        
-        .post {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 24px;
-            break-inside: avoid;
-            display: inline-block;
-            width: 100%;
-            box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .post::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--reddit-color), var(--primary-color));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+      }
 
-        .post:hover::before {
-            opacity: 1;
+      @media (min-width: 1201px) and (max-width: 1600px) {
+        .feed {
+          column-count: 3;
+          column-width: auto;
         }
-        
-        .post:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-        
-        .post.twitter::before {
-            background: linear-gradient(90deg, var(--twitter-color), var(--secondary-color));
-        }
-        
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            flex-shrink: 0;
-        }
+      }
 
-        .platform-badge {
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+      @media (min-width: 1601px) {
+        .feed {
+          column-count: 4;
+          column-width: auto;
         }
+      }
 
-        .platform-badge.reddit {
-            background: rgba(255, 107, 53, 0.1);
-            color: var(--reddit-color);
-        }
+      .post {
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 24px;
+        break-inside: avoid;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .platform-badge.twitter {
-            background: rgba(29, 155, 240, 0.1);
-            color: var(--twitter-color);
-        }
-        
-        .subreddit {
-            font-weight: 600;
-            color: var(--reddit-color);
-        }
-        
-        .author {
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-        
-        .post-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-            line-height: 1.4;
-        }
-        
-        .post-text {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-            font-size: 15px;
-        }
-        
-        .post-image {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .post-video {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .twitter-video {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .twitter-video:hover {
-            transform: scale(1.02);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .post-stats {
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-            color: var(--text-muted);
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-            font-weight: 500;
-        }
-        
-        .error {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error-color);
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            font-weight: 500;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: var(--text-secondary);
-        }
-        
-        .empty-state h2 {
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 24px;
-            font-weight: 700;
-        }
+      .post::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--reddit-color),
+          var(--primary-color)
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-        .empty-state p {
-            font-size: 16px;
-            color: var(--text-muted);
-        }
+      .post:hover::before {
+        opacity: 1;
+      }
+
+      .post:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+      }
+
+      .post.twitter::before {
+        background: linear-gradient(
+          90deg,
+          var(--twitter-color),
+          var(--secondary-color)
+        );
+      }
+
+      .post.youtube::before {
+        background: linear-gradient(
+          90deg,
+          var(--youtube-color),
+          var(--secondary-color)
+        );
+      }
+
+      .post-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+
+      .platform-badge {
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .platform-badge.reddit {
+        background: rgba(255, 107, 53, 0.1);
+        color: var(--reddit-color);
+      }
+
+      .platform-badge.twitter {
+        background: rgba(29, 155, 240, 0.1);
+        color: var(--twitter-color);
+      }
+
+      .platform-badge.youtube {
+        background: rgba(255, 0, 0, 0.1);
+        color: var(--youtube-color);
+      }
+
+      .subreddit {
+        font-weight: 600;
+        color: var(--reddit-color);
+      }
+
+      .author {
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+
+      .post-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+        line-height: 1.4;
+      }
+
+      .post-text {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 16px;
+        font-size: 15px;
+      }
+
+      .post-image {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 16px;
+      }
+
+      .post-video {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 16px;
+      }
+
+      .twitter-video {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .twitter-video:hover {
+        transform: scale(1.02);
+        box-shadow: var(--shadow-md);
+      }
+
+      .post-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--text-muted);
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        font-weight: 500;
+      }
+
+      .post-stats span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .post-stats i {
+        width: 0.5em;
+        height: 0.5em;
+      }
+
+      .error {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--error-color);
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        font-weight: 500;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--text-secondary);
+      }
+
+      .empty-state h2 {
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .empty-state p {
+        font-size: 16px;
+        color: var(--text-muted);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <div class="header-content">
-            <h1 class="app-title">Fluency</h1>
-            <div class="nav-controls">
-                <div class="auth-section">
-                    <div class="platform-status">
-                        <span class="platform-label">Reddit</span>
-                        <div class="status-indicator" id="redditStatusIndicator"></div>
-                        <span class="status-text" id="redditStatusText">Not authenticated</span>
-                    </div>
-                    <button id="redditLoginBtn">Login</button>
-                </div>
-                
-                <div class="auth-section">
-                    <div class="platform-status">
-                        <span class="platform-label">Twitter</span>
-                        <div class="status-indicator" id="twitterStatusIndicator"></div>
-                        <span class="status-text" id="twitterStatusText">Check cookie file</span>
-                    </div>
-                </div>
-                
-                <button id="fetchBothBtn" class="btn-primary">Fetch Feed</button>
+      <div class="header-content">
+        <h1 class="app-title">Fluency</h1>
+        <div class="nav-controls">
+          <div class="auth-section">
+            <div class="platform-status">
+              <span class="platform-label">Reddit</span>
+              <div class="status-indicator" id="redditStatusIndicator"></div>
+              <span class="status-text" id="redditStatusText"
+                >Not authenticated</span
+              >
             </div>
+            <button id="redditLoginBtn">Login</button>
+          </div>
+
+          <div class="auth-section">
+            <div class="platform-status">
+              <span class="platform-label">Twitter</span>
+              <div class="status-indicator" id="twitterStatusIndicator"></div>
+              <span class="status-text" id="twitterStatusText"
+                >Check cookie file</span
+              >
+            </div>
+          </div>
+
+          <div class="auth-section">
+            <div class="platform-status">
+              <span class="platform-label">YouTube</span>
+              <div class="status-indicator" id="youtubeStatusIndicator"></div>
+              <span class="status-text" id="youtubeStatusText"
+                >Not authenticated</span
+              >
+            </div>
+            <button id="youtubeLoginBtn">Login</button>
+          </div>
+
+          <button id="fetchAllBtn" class="btn-primary">Fetch All Feeds</button>
         </div>
+      </div>
     </div>
-    
+
     <div class="main-content">
-        <div id="errorContainer"></div>
-        <div id="loadingContainer"></div>
-        <div id="feedContainer"></div>
+      <div id="errorContainer"></div>
+      <div id="loadingContainer"></div>
+      <div id="feedContainer"></div>
     </div>
 
     <script src="renderer.js"></script>
-</body>
+  </body>
 </html>
