@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Scraper</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #dc3545;
+        }
+        
+        .status-indicator.authenticated {
+            background-color: #28a745;
+        }
+        
+        button {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background: #e63900;
+        }
+        
+        button.twitter {
+            background: #1da1f2;
+        }
+        
+        button.twitter:hover {
+            background: #0d8bd9;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .feed {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .feed {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .feed {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1201px) and (max-width: 1600px) {
+            .feed {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1601px) {
+            .feed {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .post {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #ff4500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .post:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .post.twitter {
+            border-left-color: #1da1f2;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #666;
+            flex-shrink: 0;
+        }
+        
+        .subreddit {
+            font-weight: 600;
+            color: #ff4500;
+        }
+        
+        .author {
+            color: #0079d3;
+        }
+        
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1b;
+            line-height: 1.3;
+            flex-grow: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+        
+        .post-text {
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            font-size: 14px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .post-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state h2 {
+            color: #1a1a1b;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Social Media Scraper</h1>
+        <div class="status">
+            <div>
+                <h3>Reddit</h3>
+                <div class="status-indicator" id="redditStatusIndicator"></div>
+                <span id="redditStatusText">Not authenticated</span>
+                <button id="redditLoginBtn">Login with Reddit</button>
+            </div>
+            <div style="margin-left: 40px;">
+                <h3>Twitter</h3>
+                <div class="status-indicator" id="twitterStatusIndicator"></div>
+                <span id="twitterStatusText">Check cookie file</span>
+            </div>
+            <div style="margin-left: 40px;">
+                <button id="fetchBothBtn" style="background: linear-gradient(45deg, #ff4500, #1da1f2); font-size: 16px; padding: 15px 30px;">Fetch Combined Feed</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="errorContainer"></div>
+    <div id="loadingContainer"></div>
+    <div id="feedContainer"></div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
