@@ -2,6 +2,17 @@ let isRedditAuthenticated = false;
 let isTwitterAuthenticated = false;
 let isYouTubeAuthenticated = false;
 
+// Configure marked for safe rendering
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,
+        gfm: true,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+}
+
 // DOM elements
 const redditStatusIndicator = document.getElementById('redditStatusIndicator');
 const redditStatusText = document.getElementById('redditStatusText');
@@ -188,7 +199,8 @@ function renderCombinedFeed(posts) {
         } else if (platform === 'youtube') {
             url = post.url;
         } else {
-            url = `https://reddit.com${post.permalink}`;
+            // For Reddit posts, prefer external URL if it exists, otherwise use permalink
+            url = post.external_url || `https://reddit.com${post.permalink}`;
         }
         
         if (platform === 'youtube') {
@@ -265,7 +277,19 @@ function renderCombinedFeed(posts) {
                 `<img src="${post.image_url}" alt="Post image" class="post-image" onerror="this.style.display='none'">` : '';
             
             const textHTML = post.text ? 
-                `<div class="post-text">${post.text}</div>` : '';
+                `<div class="post-text">${typeof marked !== 'undefined' ? marked.parse(post.text) : post.text.replace(/\n/g, '<br>')}</div>` : '';
+
+            const isRedditGallery = post.external_url && post.external_url.includes('reddit.com/gallery');
+            const linkHTML = post.external_url && !post.image_url && !post.video_url && !post.external_url.includes('reddit.com') ? 
+                `<div class="post-link">
+                    <i data-lucide="external-link"></i>
+                    <span class="link-url">${post.external_url}</span>
+                </div>` : '';
+            
+            const galleryHTML = (post.gallery_urls && post.gallery_urls.length > 0) || isRedditGallery ?
+                (post.gallery_urls || []).map(url => 
+                    `<img src="${url}" alt="Gallery image" class="post-image" onerror="this.style.display='none'">`
+                ).join('') : '';
 
             return `
                 <div class="${postClass}" onclick="openPost('${url}')" data-url="${url}">
@@ -278,6 +302,8 @@ function renderCombinedFeed(posts) {
                     ${textHTML}
                     ${videoHTML}
                     ${imageHTML}
+                    ${galleryHTML}
+                    ${linkHTML}
                     <div class="post-stats">
                         <span><i data-lucide="arrow-up"></i> ${formatNumber(post.score)}</span>
                         <span><i data-lucide="message-circle"></i> ${formatNumber(post.num_comments)}</span>
