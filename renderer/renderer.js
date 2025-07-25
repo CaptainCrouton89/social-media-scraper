@@ -123,9 +123,21 @@ function renderCombinedFeed(posts) {
             // Generate media HTML for Twitter posts
             let mediaHTML = '';
             if (post.media && post.media.length > 0) {
-                const mediaItems = post.media.map(media => {
+                const mediaItems = post.media.map((media, index) => {
                     if (media.type === 'video' || media.type === 'animated_gif') {
-                        return `<video src="${media.url}" class="post-video" controls ${media.type === 'animated_gif' ? 'autoplay muted loop' : ''} onerror="this.style.display='none'"></video>`;
+                        const videoId = `twitter-video-${post.id}-${index}`;
+                        return `<video 
+                            id="${videoId}" 
+                            src="${media.url}" 
+                            class="post-video twitter-video" 
+                            autoplay 
+                            muted 
+                            loop 
+                            controls 
+                            onerror="this.style.display='none'"
+                            onmouseenter="this.muted=false" 
+                            onmouseleave="this.muted=true">
+                        </video>`;
                     } else if (media.type === 'photo') {
                         return `<img src="${media.url}" alt="Tweet image" class="post-image" onerror="this.style.display='none'">`;
                     }
