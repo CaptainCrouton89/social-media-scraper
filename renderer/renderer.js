@@ -108,7 +108,7 @@ function renderCombinedFeed(posts) {
         feedContainer.innerHTML = `
             <div class="empty-state">
                 <h2>No posts found</h2>
-                <p>Try fetching from Reddit or Twitter.</p>
+                <p>Try fetching from Reddit or Twitter to see your feed.</p>
             </div>
         `;
         return;
@@ -123,8 +123,8 @@ function renderCombinedFeed(posts) {
             return `
                 <div class="${postClass}" onclick="openPost('${url}')" data-url="${url}">
                     <div class="post-header">
-                        <span style="background: #1da1f2; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">TWITTER</span>
-                        <span class="author" style="color: #1da1f2;">@${post.author.screen_name}</span>
+                        <span class="platform-badge twitter">Twitter</span>
+                        <span class="author">@${post.author.screen_name}</span>
                         <span>•</span>
                         <span>${post.author.name}</span>
                         <span>•</span>
@@ -154,7 +154,7 @@ function renderCombinedFeed(posts) {
             return `
                 <div class="${postClass}" onclick="openPost('${url}')" data-url="${url}">
                     <div class="post-header">
-                        <span style="background: #ff4500; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">REDDIT</span>
+                        <span class="platform-badge reddit">Reddit</span>
                         <span class="subreddit">r/${post.subreddit}</span>
                         <span>•</span>
                         <span class="author">u/${post.author}</span>

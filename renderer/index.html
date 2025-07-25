@@ -3,87 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Scraper</title>
+    <title>Fluency</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            box-sizing: border-box;
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #5855eb;
+            --secondary-color: #8b5cf6;
+            --reddit-color: #ff6b35;
+            --twitter-color: #1d9bf0;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --surface: #ffffff;
+            --surface-secondary: #f9fafb;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        
+
         * {
             box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
         
         .header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 32px;
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 32px;
         }
         
-        .status {
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 24px;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            background: var(--surface-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .platform-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .platform-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .status-indicator {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background-color: #dc3545;
+            background-color: var(--error-color);
+            transition: all 0.2s ease;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
         }
         
         .status-indicator.authenticated {
-            background-color: #28a745;
+            background-color: var(--success-color);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
         }
-        
+
+        .status-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
         button {
-            background: #ff4500;
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.2s;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            letter-spacing: 0.3px;
         }
         
         button:hover {
-            background: #e63900;
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
-        
-        button.twitter {
-            background: #1da1f2;
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 14px 28px;
+            font-size: 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
-        button.twitter:hover {
-            background: #0d8bd9;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
         
         button:disabled {
-            background: #ccc;
+            background: var(--text-muted);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #666;
+            padding: 48px 20px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
         
         .feed {
             column-count: 1;
-            column-gap: 20px;
+            column-gap: 24px;
             column-fill: balance;
-            padding: 20px 0;
+            padding: 0;
             max-width: 100%;
             overflow-x: hidden;
         }
@@ -110,132 +205,189 @@
         }
         
         .post {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 4px solid #ff4500;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
             break-inside: avoid;
             display: inline-block;
             width: 100%;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--reddit-color), var(--primary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .post:hover::before {
+            opacity: 1;
         }
         
         .post:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
         }
         
-        .post.twitter {
-            border-left-color: #1da1f2;
+        .post.twitter::before {
+            background: linear-gradient(90deg, var(--twitter-color), var(--secondary-color));
         }
         
         .post-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 16px;
             font-size: 13px;
-            color: #666;
+            color: var(--text-secondary);
             flex-shrink: 0;
+        }
+
+        .platform-badge {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-badge.reddit {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--reddit-color);
+        }
+
+        .platform-badge.twitter {
+            background: rgba(29, 155, 240, 0.1);
+            color: var(--twitter-color);
         }
         
         .subreddit {
             font-weight: 600;
-            color: #ff4500;
+            color: var(--reddit-color);
         }
         
         .author {
-            color: #0079d3;
+            color: var(--primary-color);
+            font-weight: 500;
         }
         
         .post-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #1a1a1b;
-            line-height: 1.3;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            line-height: 1.4;
         }
         
         .post-text {
-            color: #666;
-            line-height: 1.4;
-            margin-bottom: 12px;
-            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-size: 15px;
         }
         
         .post-image {
             width: 100%;
             aspect-ratio: 16/9;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
         }
         
         .post-video {
             width: 100%;
             aspect-ratio: 16/9;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
         }
         
         .post-stats {
             display: flex;
-            gap: 16px;
-            font-size: 13px;
-            color: #666;
-            padding-top: 8px;
-            border-top: 1px solid #f0f0f0;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-weight: 500;
         }
         
         .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            font-weight: 500;
         }
         
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #666;
+            padding: 80px 20px;
+            color: var(--text-secondary);
         }
         
         .empty-state h2 {
-            color: #1a1a1b;
-            margin-bottom: 8px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Social Media Scraper</h1>
-        <div class="status">
-            <div>
-                <h3>Reddit</h3>
-                <div class="status-indicator" id="redditStatusIndicator"></div>
-                <span id="redditStatusText">Not authenticated</span>
-                <button id="redditLoginBtn">Login with Reddit</button>
-            </div>
-            <div style="margin-left: 40px;">
-                <h3>Twitter</h3>
-                <div class="status-indicator" id="twitterStatusIndicator"></div>
-                <span id="twitterStatusText">Check cookie file</span>
-            </div>
-            <div style="margin-left: 40px;">
-                <button id="fetchBothBtn" style="background: linear-gradient(45deg, #ff4500, #1da1f2); font-size: 16px; padding: 15px 30px;">Fetch Combined Feed</button>
+        <div class="header-content">
+            <h1 class="app-title">Fluency</h1>
+            <div class="nav-controls">
+                <div class="auth-section">
+                    <div class="platform-status">
+                        <span class="platform-label">Reddit</span>
+                        <div class="status-indicator" id="redditStatusIndicator"></div>
+                        <span class="status-text" id="redditStatusText">Not authenticated</span>
+                    </div>
+                    <button id="redditLoginBtn">Login</button>
+                </div>
+                
+                <div class="auth-section">
+                    <div class="platform-status">
+                        <span class="platform-label">Twitter</span>
+                        <div class="status-indicator" id="twitterStatusIndicator"></div>
+                        <span class="status-text" id="twitterStatusText">Check cookie file</span>
+                    </div>
+                </div>
+                
+                <button id="fetchBothBtn" class="btn-primary">Fetch Feed</button>
             </div>
         </div>
     </div>
     
-    <div id="errorContainer"></div>
-    <div id="loadingContainer"></div>
-    <div id="feedContainer"></div>
+    <div class="main-content">
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+        <div id="feedContainer"></div>
+    </div>
 
     <script src="renderer.js"></script>
 </body>
