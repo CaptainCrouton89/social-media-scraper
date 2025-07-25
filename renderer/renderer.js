@@ -120,6 +120,20 @@ function renderCombinedFeed(posts) {
         const url = isTwitter ? post.url : `https://reddit.com${post.permalink}`;
         
         if (isTwitter) {
+            // Generate media HTML for Twitter posts
+            let mediaHTML = '';
+            if (post.media && post.media.length > 0) {
+                const mediaItems = post.media.map(media => {
+                    if (media.type === 'video' || media.type === 'animated_gif') {
+                        return `<video src="${media.url}" class="post-video" controls ${media.type === 'animated_gif' ? 'autoplay muted loop' : ''} onerror="this.style.display='none'"></video>`;
+                    } else if (media.type === 'photo') {
+                        return `<img src="${media.url}" alt="Tweet image" class="post-image" onerror="this.style.display='none'">`;
+                    }
+                    return '';
+                }).join('');
+                mediaHTML = mediaItems;
+            }
+            
             return `
                 <div class="${postClass}" onclick="openPost('${url}')" data-url="${url}">
                     <div class="post-header">
@@ -131,6 +145,7 @@ function renderCombinedFeed(posts) {
                         <span>${formatNumber(post.author.followers_count)} followers</span>
                     </div>
                     <div class="post-title">${post.text}</div>
+                    ${mediaHTML}
                     <div class="post-stats">
                         <span>❤️ ${formatNumber(post.metrics.likes)}</span>
                         <span>🔄 ${formatNumber(post.metrics.retweets)}</span>

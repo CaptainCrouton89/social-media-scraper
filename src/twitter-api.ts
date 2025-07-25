@@ -17,6 +17,11 @@ export interface TwitterTweet {
   };
   created_at: string;
   url: string;
+  media?: {
+    type: 'video' | 'photo' | 'animated_gif';
+    url: string;
+    thumbnail_url?: string;
+  }[];
 }
 
 export class TwitterAPI {
@@ -215,7 +220,10 @@ export class TwitterAPI {
       const retweetCount = legacy.retweet_count || 0;
       const replyCount = legacy.reply_count || 0;
       
-      return {
+      // Extract media content
+      const media = this.extractMediaContent(legacy);
+      
+      const tweet: TwitterTweet = {
         id: tweetId,
         text: fullText,
         author: {
@@ -231,9 +239,60 @@ export class TwitterAPI {
         created_at: legacy.created_at || '',
         url: `https://x.com/${userCore.screen_name}/status/${tweetId}`
       };
+      
+      if (media && media.length > 0) {
+        tweet.media = media;
+      }
+      
+      return tweet;
     } catch (error) {
       console.error('Error extracting tweet info:', error);
       return null;
+    }
+  }
+
+  private extractMediaContent(legacy: any): { type: 'video' | 'photo' | 'animated_gif'; url: string; thumbnail_url?: string; }[] {
+    try {
+      const media = [];
+      
+      // Check extended_entities.media first (more complete media info)
+      const extendedMedia = legacy.extended_entities?.media || [];
+      const entitiesMedia = legacy.entities?.media || [];
+      
+      // Use extended_entities if available, otherwise fall back to entities
+      const mediaArray = extendedMedia.length > 0 ? extendedMedia : entitiesMedia;
+      
+      for (const mediaItem of mediaArray) {
+        const mediaType = mediaItem.type;
+        
+        if (mediaType === 'video' || mediaType === 'animated_gif') {
+          // Get the highest quality video variant
+          const variants = mediaItem.video_info?.variants || [];
+          const mp4Variants = variants.filter((v: any) => v.content_type === 'video/mp4');
+          
+          if (mp4Variants.length > 0) {
+            // Sort by bitrate (highest first) and take the best quality
+            const bestVariant = mp4Variants.sort((a: any, b: any) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+            
+            media.push({
+              type: mediaType as 'video' | 'animated_gif',
+              url: bestVariant.url,
+              thumbnail_url: mediaItem.media_url_https
+            });
+          }
+        } else if (mediaType === 'photo') {
+          media.push({
+            type: 'photo' as const,
+            url: mediaItem.media_url_https,
+            thumbnail_url: mediaItem.media_url_https
+          });
+        }
+      }
+      
+      return media;
+    } catch (error) {
+      console.error('Error extracting media content:', error);
+      return [];
     }
   }
 }
