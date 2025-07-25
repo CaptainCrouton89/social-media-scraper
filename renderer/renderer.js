@@ -134,7 +134,11 @@ function renderCombinedFeed(posts) {
         } else {
             // Reddit posts
             const timeAgo = formatTimeAgo(post.created_utc);
-            const imageHTML = post.image_url ? 
+            
+            const videoHTML = post.video_url ? 
+                `<video src="${post.video_url}" class="post-video" controls autoplay muted loop onerror="this.style.display='none'"></video>` : '';
+            
+            const imageHTML = post.image_url && !post.video_url ? 
                 `<img src="${post.image_url}" alt="Post image" class="post-image" onerror="this.style.display='none'">` : '';
             
             const textHTML = post.text ? 
@@ -151,6 +155,7 @@ function renderCombinedFeed(posts) {
                     </div>
                     <div class="post-title">${post.title}</div>
                     ${textHTML}
+                    ${videoHTML}
                     ${imageHTML}
                     <div class="post-stats">
                         <span>↑ ${post.score}</span>
