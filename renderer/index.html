@@ -10,6 +10,11 @@
             margin: 0;
             padding: 20px;
             background-color: #f8f9fa;
+            box-sizing: border-box;
+        }
+        
+        * {
+            box-sizing: border-box;
         }
         
         .header {
@@ -75,33 +80,32 @@
         }
         
         .feed {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            column-count: 1;
+            column-gap: 20px;
+            column-fill: balance;
             padding: 20px 0;
-        }
-        
-        @media (max-width: 768px) {
-            .feed {
-                grid-template-columns: 1fr;
-            }
+            max-width: 100%;
+            overflow-x: hidden;
         }
         
         @media (min-width: 769px) and (max-width: 1200px) {
             .feed {
-                grid-template-columns: repeat(2, 1fr);
+                column-count: 2;
+                column-width: auto;
             }
         }
         
         @media (min-width: 1201px) and (max-width: 1600px) {
             .feed {
-                grid-template-columns: repeat(3, 1fr);
+                column-count: 3;
+                column-width: auto;
             }
         }
         
         @media (min-width: 1601px) {
             .feed {
-                grid-template-columns: repeat(4, 1fr);
+                column-count: 4;
+                column-width: auto;
             }
         }
         
@@ -113,10 +117,11 @@
             border-left: 4px solid #ff4500;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            height: 280px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .post:hover {
@@ -153,12 +158,6 @@
             margin-bottom: 8px;
             color: #1a1a1b;
             line-height: 1.3;
-            flex-grow: 1;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            line-clamp: 4;
-            -webkit-box-orient: vertical;
         }
         
         .post-text {
@@ -166,11 +165,6 @@
             line-height: 1.4;
             margin-bottom: 12px;
             font-size: 14px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
         }
         
         .post-image {
@@ -194,7 +188,6 @@
             gap: 16px;
             font-size: 13px;
             color: #666;
-            margin-top: auto;
             padding-top: 8px;
             border-top: 1px solid #f0f0f0;
         }

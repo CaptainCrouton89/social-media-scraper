@@ -74,6 +74,13 @@ function formatTimeAgo(timestamp) {
     return `${Math.floor(diffSeconds / 86400)}d ago`;
 }
 
+function formatNumber(num) {
+    if (num >= 1000) {
+        return Math.floor(num / 1000) + 'k';
+    }
+    return num.toString();
+}
+
 function interleavePosts(redditPosts, twitterPosts) {
     const combined = [];
     const maxLength = Math.max(redditPosts.length, twitterPosts.length);
@@ -121,13 +128,13 @@ function renderCombinedFeed(posts) {
                         <span>•</span>
                         <span>${post.author.name}</span>
                         <span>•</span>
-                        <span>${post.author.followers_count} followers</span>
+                        <span>${formatNumber(post.author.followers_count)} followers</span>
                     </div>
-                    <div class="post-title">${post.text.substring(0, 280)}${post.text.length > 280 ? '...' : ''}</div>
+                    <div class="post-title">${post.text}</div>
                     <div class="post-stats">
-                        <span>❤️ ${post.metrics.likes}</span>
-                        <span>🔄 ${post.metrics.retweets}</span>
-                        <span>💬 ${post.metrics.replies}</span>
+                        <span>❤️ ${formatNumber(post.metrics.likes)}</span>
+                        <span>🔄 ${formatNumber(post.metrics.retweets)}</span>
+                        <span>💬 ${formatNumber(post.metrics.replies)}</span>
                     </div>
                 </div>
             `;
@@ -142,7 +149,7 @@ function renderCombinedFeed(posts) {
                 `<img src="${post.image_url}" alt="Post image" class="post-image" onerror="this.style.display='none'">` : '';
             
             const textHTML = post.text ? 
-                `<div class="post-text">${post.text.substring(0, 300)}${post.text.length > 300 ? '...' : ''}</div>` : '';
+                `<div class="post-text">${post.text}</div>` : '';
 
             return `
                 <div class="${postClass}" onclick="openPost('${url}')" data-url="${url}">
@@ -158,8 +165,8 @@ function renderCombinedFeed(posts) {
                     ${videoHTML}
                     ${imageHTML}
                     <div class="post-stats">
-                        <span>↑ ${post.score}</span>
-                        <span>💬 ${post.num_comments}</span>
+                        <span>↑ ${formatNumber(post.score)}</span>
+                        <span>💬 ${formatNumber(post.num_comments)}</span>
                     </div>
                 </div>
             `;
